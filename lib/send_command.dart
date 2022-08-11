@@ -2,15 +2,12 @@ import 'package:dtalk/base_command.dart';
 import 'package:dtalk_robot/dtalk_robot.dart';
 
 class SendCommand extends BaseCommand {
-  SendCommand() : super('send', '发消息给钉钉') {
-    argParser.addOption('token', abbr: 't', help: 'dtalk token');
-    argParser.addOption('secret', abbr: 's', help: 'dtalk secret');
-  }
+  SendCommand() : super('send', '发消息给钉钉');
 
   @override
   Future<void> run() async {
-    final token = argResults?['token'];
-    final secret = argResults?['secret'];
+    final token = globalResults?['token'];
+    final secret = globalResults?['secret'];
     if (token == null || secret == null) {
       print('token or secret is null');
       return;

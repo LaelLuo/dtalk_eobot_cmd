@@ -6,8 +6,6 @@ import 'package:dtalk_robot/dtalk_robot.dart';
 
 class ProxyCommand extends BaseCommand {
   ProxyCommand() : super('proxy', '消息转发到钉钉机器人') {
-    argParser.addOption('token', abbr: 't', help: 'dtalk token');
-    argParser.addOption('secret', abbr: 's', help: 'dtalk secret');
     argParser.addOption('path', abbr: 'p', help: 'proxy path');
     argParser.addOption('port', abbr: 'o', help: 'proxy port');
     argParser.addOption('config', abbr: 'c', help: 'config file');
@@ -15,8 +13,8 @@ class ProxyCommand extends BaseCommand {
 
   @override
   Future<void> run() async {
-    final token = argResults?['token'];
-    final secret = argResults?['secret'];
+    final token = globalResults?['token'];
+    final secret = globalResults?['secret'];
     final path = argResults?['path'];
     final port = int.tryParse((argResults?['port']).toString()) ?? 8080;
     final config = argResults?['config'];
