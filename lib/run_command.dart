@@ -14,12 +14,13 @@ class RunCommand extends BaseCommand {
       print('token or secret is null');
       return;
     }
-    final command = argResults?.rest.toList();
-    if (command == null || command.isEmpty) {
+    final rest = argResults?.rest;
+    if (rest == null || rest.isEmpty) {
       print('command is empty');
       return;
     }
-    final commandString = command.join(' ');
+    final commandString = rest.first;
+    final command = commandString.split(RegExp(r' +'));
     final processResult = await Process.run(command.removeAt(0), command, runInShell: true);
     final builder = StringBuffer('执行命令: $commandString\n');
     builder.write('stdout: ${processResult.stdout}\n');
