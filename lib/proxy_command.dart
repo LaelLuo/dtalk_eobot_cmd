@@ -1,22 +1,29 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dtalk/base_command.dart';
+import 'package:args/command_runner.dart';
+import 'package:dtalk/ext.dart';
 import 'package:dtalk_robot/dtalk_robot.dart';
 
-class ProxyCommand extends BaseCommand {
-  ProxyCommand() : super('proxy', '消息转发到钉钉机器人') {
+class ProxyCommand extends Command {
+  ProxyCommand() : super() {
     argParser.addOption('path', abbr: 'p', help: 'proxy path');
-    argParser.addOption('port', abbr: 'o', help: 'proxy port');
+    argParser.addOption('port', abbr: 'o', help: 'proxy port', defaultsTo: '8080');
     argParser.addOption('config', abbr: 'c', help: 'config file');
   }
 
   @override
+  String description = '消息转发到钉钉机器人';
+
+  @override
+  String name = 'proxy';
+
+  @override
   Future<void> run() async {
-    final token = globalResults?['token'];
-    final secret = globalResults?['secret'];
-    final path = argResults?['path'];
-    final port = int.tryParse((argResults?['port']).toString()) ?? 8080;
+    final token = globalResults.getStringOrNull('token');
+    final secret = globalResults.getStringOrNull('secret');
+    final path = getStringOrNull('path');
+    final port = getInt('port');
     final config = argResults?['config'];
     final dTalkMap = <String, DTalk>{};
 
@@ -62,21 +69,22 @@ class ProxyCommand extends BaseCommand {
         continue;
       }
 
+      final String? message;
       switch (request.method) {
         case 'POST':
-          final message = await utf8.decoder.bind(request).join();
-          await dTalk.sendMessage(message);
+          message = await utf8.decoder.bind(request).join();
           break;
         case 'GET':
-          final message = request.uri.queryParameters['message'];
-          if (message == null) {
-            request.response.statusCode = 404;
-          } else {
-            await dTalk.sendMessage(message);
-          }
+          message = request.uri.queryParameters['message'];
           break;
         default:
-          request.response.statusCode = 405;
+          message = null;
+          break;
+      }
+      if (message == null) {
+        request.response.statusCode = 404;
+      } else {
+        await dTalk.sendMessage(message);
       }
       request.response.close();
     }

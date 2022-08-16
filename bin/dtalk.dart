@@ -8,9 +8,6 @@ import 'package:dtalk/send_command.dart';
 Future<void> main(List<String> arguments) async {
   exitCode = 0;
   final CommandRunner<void> runner = CommandRunner<void>('dtalk', '给你的钉钉发消息');
-  final argParser = runner.argParser;
-  argParser.addOption('token', abbr: 't', help: 'dtalk token', mandatory: true);
-  argParser.addOption('secret', abbr: 's', help: 'dtalk secret', mandatory: true);
   runner.addCommand(SendCommand());
   runner.addCommand(ProxyCommand());
   runner.addCommand(RunCommand());
