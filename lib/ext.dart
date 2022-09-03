@@ -25,6 +25,18 @@ extension ArgResultsExt on ArgResults? {
     if (value == null) throw FormatException('$tag not found');
     return value;
   }
+
+  bool? getBoolOrNull(String tag) {
+    final value = this?[tag];
+    if (value is bool?) return value;
+    return "true" == value;
+  }
+
+  bool getBool(String tag) {
+    final value = getBoolOrNull(tag);
+    if (value == null) throw FormatException('$tag not found');
+    return value;
+  }
 }
 
 extension CommandExt on Command {
@@ -35,6 +47,8 @@ extension CommandExt on Command {
   int? getIntOrNull(String tag) => argResults.getIntOrNull(tag);
 
   int getInt(String tag) => argResults.getInt(tag);
+
+  bool getBool(String tag) => argResults.getBool(tag);
 }
 
 class Ext {}
